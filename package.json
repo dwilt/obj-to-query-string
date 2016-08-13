@@ -1,6 +1,6 @@
 {
   "name": "obj-to-query-string",
-  "version": "1.0.5",
+  "version": "1.0.6",
   "description": "A standalone js function to convert an object to a query string",
   "main": "index.js",
   "scripts": {
