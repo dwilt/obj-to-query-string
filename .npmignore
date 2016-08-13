@@ -4,3 +4,4 @@ tests
 .idea
 .babelrc
 .gitignore
+webpack.config.js
