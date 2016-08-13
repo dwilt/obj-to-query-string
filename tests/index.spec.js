@@ -1,6 +1,6 @@
 import test from 'tape';
 
-import toQueryString from '../src/index';
+import toQueryString from '../lib/index';
 import ERROR_CODES from '../src/error-codes';
 
 test('It returns an empty string if nothing is passed in', t => {
