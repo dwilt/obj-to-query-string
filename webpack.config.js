@@ -2,8 +2,9 @@ module.exports = {
     context: __dirname + "/src",
     entry: "./index",
     output: {
-        path: __dirname + "/dist",
-        filename: "index.js"
+        path: __dirname,
+        filename: "index.js",
+        libraryTarget: 'umd'
     },
     module: {
         loaders: [
