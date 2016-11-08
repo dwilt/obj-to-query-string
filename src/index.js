@@ -8,22 +8,46 @@ export default (obj = {}) => {
         }
     }
 
-    var result = '';
+    var result = '',
+        objKeys = Object.keys(obj);
 
-    for(var key in obj) {
+    objKeys.forEach((key, i) => {
         let value = obj[key];
 
-        if(typeof value !== 'string' && typeof value !== 'number') {
+        if(typeof value !== 'string' && typeof value !== 'number' && !Array.isArray(value)) {
             throw {
                 code: ERROR_CODES.invalidObjectProperty,
-                message: `The object passed in can only contain string or number values for it's properties`
+                message: `The object passed in can only contain a string, number, or an array of numbers/strings as values for it's properties`
             }
         }
 
-        value = encodeURIComponent(value);
+        if(Array.isArray(value)) {
+            value.forEach((val, j) => {
+                if(typeof val !== 'string' && typeof val !== 'number') {
+                    throw {
+                        code: ERROR_CODES.invalidArrayValue,
+                        message: `The array (${value}) can only contain string or numbers. ${val} is not a number or string.`
+                    }
+                }
+                
+                var encodedValue = encodeURIComponent(val);
 
-        result += `${key}=${value}&`;
-    }
+                result += `${key}[]=${encodedValue}`;
 
-    return result.slice(0, result.length - 1);
+                if(j !== value.length - 1) {
+                    result += '&'
+                }
+            });
+        } else {
+            value = encodeURIComponent(value);
+            result += `${key}=${value}`;
+        }
+
+        if(i !== objKeys.length - 1) {
+            result += '&'
+        }
+
+    });
+
+    return result;
 }

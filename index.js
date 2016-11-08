@@ -78,24 +78,47 @@ return /******/ (function(modules) { // webpackBootstrap
 	        };
 	    }
 
-	    var result = '';
+	    var result = '',
+	        objKeys = Object.keys(obj);
 
-	    for (var key in obj) {
+	    objKeys.forEach(function (key, i) {
 	        var value = obj[key];
 
-	        if (typeof value !== 'string' && typeof value !== 'number') {
+	        if (typeof value !== 'string' && typeof value !== 'number' && !Array.isArray(value)) {
 	            throw {
 	                code: _errorCodes2.default.invalidObjectProperty,
-	                message: 'The object passed in can only contain string or number values for it\'s properties'
+	                message: 'The object passed in can only contain a string, number, or an array of numbers/strings as values for it\'s properties'
 	            };
 	        }
 
-	        value = encodeURIComponent(value);
+	        if (Array.isArray(value)) {
+	            value.forEach(function (val, j) {
+	                if (typeof val !== 'string' && typeof val !== 'number') {
+	                    throw {
+	                        code: _errorCodes2.default.invalidArrayValue,
+	                        message: 'The array (' + value + ') can only contain string or numbers. ' + val + ' is not a number or string.'
+	                    };
+	                }
 
-	        result += key + '=' + value + '&';
-	    }
+	                var encodedValue = encodeURIComponent(val);
 
-	    return result.slice(0, result.length - 1);
+	                result += key + '[]=' + encodedValue;
+
+	                if (j !== value.length - 1) {
+	                    result += '&';
+	                }
+	            });
+	        } else {
+	            value = encodeURIComponent(value);
+	            result += key + '=' + value;
+	        }
+
+	        if (i !== objKeys.length - 1) {
+	            result += '&';
+	        }
+	    });
+
+	    return result;
 	};
 
 /***/ },
@@ -109,7 +132,8 @@ return /******/ (function(modules) { // webpackBootstrap
 	});
 	exports.default = {
 	    invalidObjectParam: "INVALID_OBJECT",
-	    invalidObjectProperty: "INVALID_OBJECT_PROPERTY"
+	    invalidObjectProperty: "INVALID_OBJECT_PROPERTY",
+	    invalidArrayValue: "INVALID_ARRAY_VALUE"
 	};
 
 /***/ }
