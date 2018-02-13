@@ -1,13 +1,13 @@
 {
   "name": "obj-to-query-string",
-  "version": "1.1.2",
+  "version": "1.1.5",
   "description": "A standalone js function to convert an object to a query string",
   "main": "dist/index.js",
   "scripts": {
     "transform": "webpack",
     "test": "npm run transform && tape -r babel-register tests/**/*.js",
-    "build": "npm run test && webpack",
-    "prepublish": "npm run build",
+    "build": "webpack",
+    "prepublish": "npm run test; npm run build",
     "postinstall": "npm run build"
   },
   "author": {

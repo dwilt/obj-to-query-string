@@ -1,7 +1,4 @@
-/node_modules
-src
-tests
+node_modules
 .idea
 .babelrc
 .gitignore
-webpack.config.js
