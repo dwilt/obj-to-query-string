@@ -6,11 +6,11 @@ The function takes a single parameter, an object. The object must contain _only 
 ```javascript
 import toQueryString from 'obj-to-query-string';
 
-var myObject = {
+const myObject = {
     a: 1,
     b: 'some string',
     anArray: [1, 'some other string']
 };
 
-var params = toQueryString(myObject); // 'a=1&b=some%20string&anArray[]=1&anArray[]=some%20other%20string'
+const params = toQueryString(myObject); // 'a=1&b=some%20string&anArray[]=1&anArray[]=some%20other%20string'
 ```
