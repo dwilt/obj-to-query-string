@@ -8,8 +8,8 @@ export default (obj = {}) => {
         }
     }
 
-    var result = '',
-        objKeys = Object.keys(obj);
+    let result = ``;
+    const objKeys = Object.keys(obj);
 
     objKeys.forEach((key, i) => {
         let value = obj[key];
@@ -29,8 +29,8 @@ export default (obj = {}) => {
                         message: `The array (${value}) can only contain string or numbers. ${val} is not a number or string.`
                     }
                 }
-                
-                var encodedValue = encodeURIComponent(val);
+
+                const encodedValue = encodeURIComponent(val);
 
                 result += `${key}[]=${encodedValue}`;
 

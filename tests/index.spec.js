@@ -4,102 +4,102 @@ import toQueryString from '../src/index';
 import ERROR_CODES from '../src/error-codes';
 
 test('It returns an empty string if nothing is passed in', t => {
-    var result = toQueryString();
+    const result = toQueryString();
 
     t.equal(result, '');
     t.end();
 });
 
 test(`It returns a query string when an integer is passed in`, t => {
-    var object = {
+    const object = {
         a: 1
     };
 
-    var result = toQueryString(object);
+    const result = toQueryString(object);
 
     t.equal(result, 'a=1');
     t.end();
 });
 
 test(`It can handle an integer as a key`, t => {
-    var object = {
+    const object = {
         3: 1
     };
 
-    var result = toQueryString(object);
+    const result = toQueryString(object);
 
     t.equal(result, '3=1');
     t.end();
 });
 
 test(`It can handle multiple integers by splitting them up with a &`, t => {
-    var object = {
+    const object = {
         a: 1,
         b: 2
     };
 
-    var result = toQueryString(object);
+    const result = toQueryString(object);
 
     t.equal(result, 'a=1&b=2');
     t.end();
 });
 
 test(`It will handle strings by URI encoding them`, t => {
-    var object = {
+    const object = {
         a: 'a string',
         b: 'another string'
     };
 
-    var result = toQueryString(object);
+    const result = toQueryString(object);
 
     t.equal(result, 'a=a%20string&b=another%20string');
     t.end();
 });
 
 test(`It can handle a string as a key`, t => {
-    var object = {
+    const object = {
         a: 'a string'
     };
-    
+
     object['string-key'] = 'another string';
 
-    var result = toQueryString(object);
+    const result = toQueryString(object);
 
     t.equal(result, 'a=a%20string&string-key=another%20string');
     t.end();
 });
 
 test(`It will handle an array of numbers by creating the format 'arrayName[]=val1&arrayName[]=val2`, t => {
-    var object = {
+    const object = {
         a: [1, 2, 3]
     };
 
-    var result = toQueryString(object);
+    const result = toQueryString(object);
 
     t.equal(result, 'a[]=1&a[]=2&a[]=3');
     t.end();
 });
 
 test(`It will handle an array of strings by creating the format 'arrayName[]=val1&arrayName[]=val2`, t => {
-    var object = {
+    const object = {
         a: ['a string', 'the second string', 'the third string']
     };
 
-    var result = toQueryString(object);
+    const result = toQueryString(object);
 
     t.equal(result, 'a[]=a%20string&a[]=the%20second%20string&a[]=the%20third%20string');
     t.end();
 });
 
 test(`It will handle integers, strings, and multiple array of strings of strings/numbers by creating the format 'arrayName[]=val1&arrayName[]=val2`, t => {
-    var object = {
+    const object = {
         a: ['a string', 'the second string', 'the third string', 2],
         b: 3,
         c: 'a string by itself',
         4: [1, 'more', 'array of stuff']
     };
 
-    var result = toQueryString(object);
+    const result = toQueryString(object);
 
     t.equal(result, '4[]=1&4[]=more&4[]=array%20of%20stuff&a[]=a%20string&a[]=the%20second%20string&a[]=the%20third%20string&a[]=2&b=3&c=a%20string%20by%20itself');
     t.end();
@@ -110,7 +110,7 @@ test(`It will handle integers, strings, and multiple array of strings of strings
 
 test('Throws an error if anything but an object is passed in', t => {
     // [1, 'two', () => {}, null, NaN];
-    var params = [
+    const params = [
         {
             name: 'Integer',
             value: 1
@@ -133,7 +133,7 @@ test('Throws an error if anything but an object is passed in', t => {
         let { name, value } = param;
 
         try {
-            var result = toQueryString(value);
+            const result = toQueryString(value);
 
             t.fail(`Failed to throw an error when a param of type '${name}' is passed in`);
             t.end();
@@ -147,7 +147,7 @@ test('Throws an error if anything but an object is passed in', t => {
 });
 
 test('Throws an error if an object passed in has any properties but an integer, string, or array of numbers/strings', t => {
-    var props = [
+    const props = [
         {
             name: 'Object',
             value: {}
@@ -170,7 +170,7 @@ test('Throws an error if an object passed in has any properties but an integer, 
         let { name, value } = prop;
 
         try {
-            var result = toQueryString({
+            const result = toQueryString({
                 name: value
             });
 
@@ -186,7 +186,7 @@ test('Throws an error if an object passed in has any properties but an integer, 
 });
 
 test('Throws an error if an array has anything but a number or string', t => {
-    var props = [
+    const props = [
         {
             name: 'Object',
             value: [1, 2, {}]
@@ -209,7 +209,7 @@ test('Throws an error if an array has anything but a number or string', t => {
         let { name, value } = prop;
 
         try {
-            var result = toQueryString({
+            const result = toQueryString({
                 name: value
             });
 

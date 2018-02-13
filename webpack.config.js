@@ -1,19 +1,21 @@
+const path = require('path');
+
 module.exports = {
-    context: __dirname + "/src",
-    entry: "./index",
+    entry: "./src/index.js",
     output: {
-        path: __dirname,
+        path: path.resolve(__dirname, 'dist'),
         filename: "index.js",
-        libraryTarget: 'umd'
     },
     module: {
-        loaders: [
+        rules: [
             {
                 test: /\.js$/,
-                exclude: /(node_modules)/,
-                loader: 'babel', // 'babel-loader' is also a legal name to reference
-                query: {
-                    presets: ['es2015']
+                exclude: /(node_modules|bower_components)/,
+                use: {
+                    loader: 'babel-loader',
+                    options: {
+                        presets: ['babel-preset-env']
+                    }
                 }
             }
         ]
