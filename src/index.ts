@@ -77,7 +77,7 @@ export function removeEmpty(
 }
 
 /**
- * This function will take an object of values and covert them to a query string
+ * This function will take an object of values and covert it to a query string
  * @constructor
  * @param {object} paramObject - An object comprised of strings, numbers and arrays of strings/numbers.
  * @example
