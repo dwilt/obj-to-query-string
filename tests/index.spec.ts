@@ -1,6 +1,18 @@
 import * as test from "tape";
 
-import objToQueryString, { ParamError } from "../src/index";
+import objToQueryString, { ParamError, removeEmpty } from "../src/index";
+
+test("removeEmpty will remove undefined and null values", t => {
+  const result = removeEmpty({
+    a: undefined,
+    b: "something",
+    c: undefined,
+    d: [undefined, null, 1]
+  });
+
+  t.deepEqual(result, { b: "something", d: [1] });
+  t.end();
+});
 
 test("It returns an empty string if nothing is passed in", t => {
   const result = objToQueryString();
@@ -46,13 +58,13 @@ test(`It can handle multiple integers by splitting them up with a &`, t => {
 test(`It will clear out empty strings and arrays`, t => {
   const object = {
     a: "",
-    b: "",
+    b: "hey",
     c: []
   };
 
   const result = objToQueryString(object);
 
-  t.equal(result, "");
+  t.equal(result, "b=hey");
   t.end();
 });
 
@@ -189,10 +201,6 @@ test("Throws an error if an object passed in has any properties but an integer, 
     {
       name: "Function",
       value: () => {}
-    },
-    {
-      name: "null",
-      value: null
     }
   ];
 
@@ -225,14 +233,6 @@ test("Throws an error if an array has anything but a number or string", t => {
     {
       name: "Function",
       value: ["a string", () => {}]
-    },
-    {
-      name: "null",
-      value: [null, 2, "a string"]
-    },
-    {
-      name: "undefined",
-      value: [undefined, 1, 2]
     }
   ];
 

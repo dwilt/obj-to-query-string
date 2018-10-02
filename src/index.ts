@@ -25,7 +25,8 @@ function checkIfObjectisValid(paramObject: ParamObject): void {
       typeof value !== "string" &&
       typeof value !== "number" &&
       !Array.isArray(value) &&
-      value !== undefined
+      value !== undefined &&
+      value !== null
     ) {
       throw {
         code: ParamError.invalidObjectProperty,
@@ -46,41 +47,65 @@ function checkIfObjectisValid(paramObject: ParamObject): void {
   });
 }
 
-function isValidValue(val: number | string) {
+export function isValidValue(val: number | string) {
   return typeof val === "number" || (typeof val === "string" && !!val.length);
+}
+
+/** This function removes any undefined/null properties from an object as well as any undefined/null values in any arrays on the object */
+export function removeEmpty(
+  obj: {
+    [key: string]: any;
+  } = {}
+): {} {
+  const newObj: {
+    [key: string]: any;
+  } = {};
+
+  return Object.keys(obj).reduce((current, key) => {
+    if (Array.isArray(obj[key]) && obj[key].length > 0) {
+      current[key] = obj[key].filter(val => isValidValue(val));
+
+      if (current[key].length === 0) {
+        delete current[key];
+      }
+    } else if (isValidValue(obj[key])) {
+      current[key] = obj[key];
+    }
+
+    return current;
+  }, newObj);
 }
 
 /** This function will take an object of values and covert them to a query string used in a URL (typically for a GET request) */
 export default function(paramObject: ParamObject = {}): QueryString {
   checkIfObjectisValid(paramObject);
 
-  const paramObjectKeys = Object.keys(paramObject);
+  const cleanedObject = removeEmpty(paramObject);
+  const paramObjectKeys = Object.keys(cleanedObject);
 
   return paramObjectKeys.reduce((current, key, i) => {
     let value = paramObject[key];
 
-    if (value === undefined) {
-      return "";
-    }
-
     if (Array.isArray(value)) {
-      value.forEach((arrayValue, j) => {
-        const stringedValue = arrayValue.toString();
+      if (!!value.length) {
+        value.forEach((arrayValue, j) => {
+          const stringedValue = arrayValue.toString();
 
-        if (isValidValue(stringedValue)) {
-          const encodedValue = encodeURIComponent(stringedValue);
+          if (isValidValue(stringedValue)) {
+            const encodedValue = encodeURIComponent(stringedValue);
 
-          current += `${key}[]=${encodedValue}`;
+            current += `${key}[]=${encodedValue}`;
 
-          // @ts-ignore
-          if (j !== value.length - 1) {
-            current += "&";
+            // @ts-ignore
+            if (j !== value.length - 1) {
+              current += "&";
+            }
           }
-        }
-      });
+        });
 
-      if (i !== paramObjectKeys.length - 1) {
-        current += "&";
+        if (i !== paramObjectKeys.length - 1) {
+          current += "&";
+        }
       }
     } else {
       const stringedValue = value.toString();
