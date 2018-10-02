@@ -5,10 +5,9 @@
   "main": "dist/index.js",
   "scripts": {
     "transform": "webpack",
-    "test": "npm run transform && tape -r babel-register tests/**/*.js",
+    "test": "npm run transform; ts-node node_modules/tape/bin/tape tests/**/*.ts -p /tests",
     "build": "webpack",
-    "prepublish": "npm run test; npm run build",
-    "postinstall": "npm run build"
+    "prepublish": "npm run test; npm run build"
   },
   "author": {
     "name": "Dan Wilt",
@@ -17,13 +16,18 @@
   },
   "license": "ISC",
   "devDependencies": {
+    "@types/tape": "^4.2.32",
     "babel-core": "^6.13.2",
     "babel-loader": "^6.2.4",
     "babel-preset-env": "^1.6.1",
     "babel-register": "^6.11.6",
     "tape": "^4.6.0",
+    "ts-loader": "^5.2.1",
+    "ts-node": "^7.0.1",
+    "typescript": "^3.1.1",
     "uglify-js": "^2.7.0",
-    "webpack": "^3.11.0"
+    "webpack": "^4.20.2",
+    "webpack-cli": "^3.1.2"
   },
   "repository": {
     "type": "git",
