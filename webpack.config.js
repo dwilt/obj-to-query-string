@@ -5,14 +5,18 @@ module.exports = {
   entry: "./src/index.ts",
   output: {
     path: path.resolve(__dirname, "dist"),
-    filename: "index.js"
+    filename: "index.js",
+    libraryTarget: "umd"
   },
   module: {
     rules: [
       {
         test: /\.tsx?$/,
-        use: "ts-loader",
-        exclude: /node_modules/
+        exclude: /node_modules/,
+        loader: "ts-loader",
+        options: {
+          configFile: path.resolve(__dirname, "src", "tsconfig.json")
+        }
       }
     ]
   }
