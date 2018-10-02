@@ -76,7 +76,14 @@ export function removeEmpty(
   }, newObj);
 }
 
-/** This function will take an object of values and covert them to a query string used in a URL (typically for a GET request) */
+/**
+ * This function will take an object of values and covert them to a query string
+ * @constructor
+ * @param {object} paramObject - An object comprised of strings, numbers and arrays of strings/numbers.
+ * @example
+ * // returns name=Dan&age=32&favoriteColors[]=blue&favoriteColors[]=red
+ * objToQueryString({ name: 'Dan', age: 32, middleName: undefined, favoriteColors=['blue', 'red'], kids: null });
+ */
 export default function(paramObject: ParamObject = {}): QueryString {
   checkIfObjectisValid(paramObject);
 

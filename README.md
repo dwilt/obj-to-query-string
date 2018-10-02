@@ -12,6 +12,8 @@ yarn add obj-to-query-string
 
 The function takes a single parameter, an object. The object must contain _only strings, numbers, or an array of numbers/strings_ as it's properties as I can't think of a sensible way to do deep nesting for objects.
 
+Any `null` or `undefined` values on the object or in any arrays on the object will be ignored.
+
 ```javascript
 import toQueryString from "obj-to-query-string";
 
