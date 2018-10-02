@@ -18,13 +18,14 @@ function checkIfObjectisValid(paramObject: ParamObject): void {
     };
   }
 
-  Object.keys(paramObject).forEach((key, i) => {
+  Object.keys(paramObject).forEach(key => {
     let value = paramObject[key];
 
     if (
       typeof value !== "string" &&
       typeof value !== "number" &&
-      !Array.isArray(value)
+      !Array.isArray(value) &&
+      value !== undefined
     ) {
       throw {
         code: ParamError.invalidObjectProperty,
@@ -45,6 +46,10 @@ function checkIfObjectisValid(paramObject: ParamObject): void {
   });
 }
 
+function isValidValue(val: number | string) {
+  return typeof val === "number" || (typeof val === "string" && !!val.length);
+}
+
 /** This function will take an object of values and covert them to a query string used in a URL (typically for a GET request) */
 export default function(paramObject: ParamObject = {}): QueryString {
   checkIfObjectisValid(paramObject);
@@ -54,24 +59,40 @@ export default function(paramObject: ParamObject = {}): QueryString {
   return paramObjectKeys.reduce((current, key, i) => {
     let value = paramObject[key];
 
-    if (Array.isArray(value)) {
-      value.forEach((val, j) => {
-        const encodedValue = encodeURIComponent(val.toString());
-
-        current += `${key}[]=${encodedValue}`;
-
-        // @ts-ignore
-        if (j !== value.length - 1) {
-          current += "&";
-        }
-      });
-    } else {
-      value = encodeURIComponent(value.toString());
-      current += `${key}=${value}`;
+    if (value === undefined) {
+      return "";
     }
 
-    if (i !== paramObjectKeys.length - 1) {
-      current += "&";
+    if (Array.isArray(value)) {
+      value.forEach((arrayValue, j) => {
+        const stringedValue = arrayValue.toString();
+
+        if (isValidValue(stringedValue)) {
+          const encodedValue = encodeURIComponent(stringedValue);
+
+          current += `${key}[]=${encodedValue}`;
+
+          // @ts-ignore
+          if (j !== value.length - 1) {
+            current += "&";
+          }
+        }
+      });
+
+      if (i !== paramObjectKeys.length - 1) {
+        current += "&";
+      }
+    } else {
+      const stringedValue = value.toString();
+
+      if (isValidValue(stringedValue)) {
+        value = encodeURIComponent(stringedValue);
+        current += `${key}=${value}`;
+
+        if (i !== paramObjectKeys.length - 1) {
+          current += "&";
+        }
+      }
     }
 
     return current;

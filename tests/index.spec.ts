@@ -43,6 +43,31 @@ test(`It can handle multiple integers by splitting them up with a &`, t => {
   t.end();
 });
 
+test(`It will clear out empty strings and arrays`, t => {
+  const object = {
+    a: "",
+    b: "",
+    c: []
+  };
+
+  const result = objToQueryString(object);
+
+  t.equal(result, "");
+  t.end();
+});
+
+test(`It will clear out undefined values`, t => {
+  const object = {
+    a: undefined,
+    b: "hey"
+  };
+
+  const result = objToQueryString(object);
+
+  t.equal(result, "b=hey");
+  t.end();
+});
+
 test(`It will handle strings by URI encoding them`, t => {
   const object = {
     a: "a string",
@@ -168,10 +193,6 @@ test("Throws an error if an object passed in has any properties but an integer, 
     {
       name: "null",
       value: null
-    },
-    {
-      name: "undefined",
-      value: undefined
     }
   ];
 
