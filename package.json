@@ -8,7 +8,8 @@
     "test": "npm run transform; ts-node tests/*.spec.ts",
     "build": "webpack",
     "prepublishOnly": "npm run test; npm run build",
-    "postversion": "git push --tags; npm publish"
+    "preversion": "npm run test;",
+    "postversion": "git push --tags; git push; npm publish"
   },
   "author": {
     "name": "Dan Wilt",
