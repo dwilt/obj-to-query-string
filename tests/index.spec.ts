@@ -32,6 +32,17 @@ test(`It returns a query string when an integer is passed in`, t => {
   t.end();
 });
 
+test(`It returns a query string when a boolean is passed in`, t => {
+  const object = {
+    a: false
+  };
+
+  const result = objToQueryString(object);
+
+  t.equal(result, "a=false");
+  t.end();
+});
+
 test(`It can handle an integer as a key`, t => {
   const object = {
     3: 1
@@ -132,19 +143,20 @@ test(`It will handle an array of strings by creating the format 'arrayName[]=val
   t.end();
 });
 
-test(`It will handle integers, strings, and multiple array of strings of strings/numbers by creating the format 'arrayName[]=val1&arrayName[]=val2`, t => {
+test(`It will handle integers, strings, booleans, and multiple array of strings of strings/numbers by creating the format 'arrayName[]=val1&arrayName[]=val2`, t => {
   const object = {
     a: ["a string", "the second string", "the third string", 2],
     b: 3,
     c: "a string by itself",
-    4: [1, "more", "array of stuff"]
+    4: [1, "more", "array of stuff"],
+    d: false
   };
 
   const result = objToQueryString(object);
 
   t.equal(
     result,
-    "4[]=1&4[]=more&4[]=array%20of%20stuff&a[]=a%20string&a[]=the%20second%20string&a[]=the%20third%20string&a[]=2&b=3&c=a%20string%20by%20itself"
+    "4[]=1&4[]=more&4[]=array%20of%20stuff&a[]=a%20string&a[]=the%20second%20string&a[]=the%20third%20string&a[]=2&b=3&c=a%20string%20by%20itself&d=false"
   );
   t.end();
 });

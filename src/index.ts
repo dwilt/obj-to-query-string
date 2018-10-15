@@ -1,7 +1,9 @@
 export type QueryString = string;
 
+export type ValidValue = string | number | boolean;
+
 export interface ParamObject {
-  [key: string]: string | number | (string | number)[];
+  [key: string]: ValidValue | ValidValue[];
 }
 
 export enum ParamError {
@@ -24,6 +26,7 @@ function checkIfObjectisValid(paramObject: ParamObject): void {
     if (
       typeof value !== "string" &&
       typeof value !== "number" &&
+      typeof value !== "boolean" &&
       !Array.isArray(value) &&
       value !== undefined &&
       value !== null
@@ -47,8 +50,12 @@ function checkIfObjectisValid(paramObject: ParamObject): void {
   });
 }
 
-export function isValidValue(val: number | string) {
-  return typeof val === "number" || (typeof val === "string" && !!val.length);
+export function isValidValue(val: ValidValue) {
+  return (
+    typeof val === "number" ||
+    (typeof val === "string" && !!val.length) ||
+    typeof val === "boolean"
+  );
 }
 
 /** This function removes any undefined/null properties from an object as well as any undefined/null values in any arrays on the object */
@@ -69,7 +76,7 @@ export function removeEmpty(
         delete current[key];
       }
     } else if (isValidValue(obj[key])) {
-      current[key] = obj[key];
+      current[key] = obj[key].toString();
     }
 
     return current;
