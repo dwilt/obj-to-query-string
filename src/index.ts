@@ -1,6 +1,6 @@
 export type QueryString = string;
 
-export type ValidValue = string | number | boolean;
+export type ValidValue = string | number | boolean | null | undefined;
 
 export interface ParamObject {
   [key: string]: ValidValue | ValidValue[];
@@ -23,38 +23,40 @@ function checkIfObjectisValid(paramObject: ParamObject): void {
   Object.keys(paramObject).forEach(key => {
     let value = paramObject[key];
 
-    if (
-      typeof value !== "string" &&
-      typeof value !== "number" &&
-      typeof value !== "boolean" &&
-      !Array.isArray(value) &&
-      value !== undefined &&
-      value !== null
-    ) {
-      throw {
-        code: ParamError.invalidObjectProperty,
-        message: `${value} is not valid a value property. The object passed in can only contain a string, number, or an array of numbers/strings as values for it's properties`
-      };
-    }
-
     if (Array.isArray(value)) {
       value.forEach((val, j) => {
-        if (typeof val !== "string" && typeof val !== "number") {
+        if (!isValidValue(val)) {
           throw {
             code: ParamError.invalidArrayValue,
             message: `The array (${value}) can only contain string or numbers. ${val} is not a number or string.`
           };
         }
       });
+    } else if (!isValidValue(value)) {
+      throw {
+        code: ParamError.invalidObjectProperty,
+        message: `${value} is not valid a value property. The object passed in can only contain a string, number, or an array of numbers/strings as values for it's properties`
+      };
     }
   });
+}
+
+function isEmptyValue(val: any) {
+  return (
+    val === "" ||
+    (Array.isArray(val) && val.length === 0) ||
+    val === null ||
+    val === undefined
+  );
 }
 
 export function isValidValue(val: ValidValue) {
   return (
     typeof val === "number" ||
-    (typeof val === "string" && !!val.length) ||
-    typeof val === "boolean"
+    typeof val === "string" ||
+    typeof val === "boolean" ||
+    val === null ||
+    val === undefined
   );
 }
 
@@ -69,14 +71,16 @@ export function removeEmpty(
   } = {};
 
   return Object.keys(obj).reduce((current, key) => {
-    if (Array.isArray(obj[key]) && obj[key].length > 0) {
-      current[key] = obj[key].filter(val => isValidValue(val));
+    if (!isEmptyValue(obj[key])) {
+      if (Array.isArray(obj[key])) {
+        current[key] = obj[key].filter(val => !isEmptyValue(val));
 
-      if (current[key].length === 0) {
-        delete current[key];
+        if (current[key].length === 0) {
+          delete current[key];
+        }
+      } else {
+        current[key] = obj[key].toString();
       }
-    } else if (isValidValue(obj[key])) {
-      current[key] = obj[key].toString();
     }
 
     return current;
